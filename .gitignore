@@ -1,0 +1,21 @@
+# --- Raw / licensed / confidential data — never publish ---------------------
+# Opta F24/F7 event feeds (licensed) + third-party take-home (candidate_dataset)
+/Data/
+
+# --- Inspection artifacts (page & slide renders) ----------------------------
+/output/pages/
+/output/deck_pages/
+/output/ac/
+/output/deck/
+
+# --- Python -----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- OS / editor ------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

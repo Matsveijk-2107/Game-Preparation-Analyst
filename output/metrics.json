@@ -1,0 +1,579 @@
+{
+  "team": "Feyenoord",
+  "n_matches": 10,
+  "matches": [
+    {
+      "date": "2022-08-07",
+      "venue": "A",
+      "opp": "Vitesse",
+      "gf": 5,
+      "ga": 2,
+      "res": "W",
+      "formation": "4231"
+    },
+    {
+      "date": "2022-08-13",
+      "venue": "H",
+      "opp": "sc Heerenveen",
+      "gf": 0,
+      "ga": 0,
+      "res": "D",
+      "formation": "4231"
+    },
+    {
+      "date": "2022-08-21",
+      "venue": "A",
+      "opp": "RKC Waalwijk",
+      "gf": 1,
+      "ga": 0,
+      "res": "W",
+      "formation": "4231"
+    },
+    {
+      "date": "2022-08-27",
+      "venue": "H",
+      "opp": "FC Emmen",
+      "gf": 4,
+      "ga": 0,
+      "res": "W",
+      "formation": "433"
+    },
+    {
+      "date": "2022-09-03",
+      "venue": "A",
+      "opp": "Go Ahead Eagles",
+      "gf": 4,
+      "ga": 3,
+      "res": "W",
+      "formation": "433"
+    },
+    {
+      "date": "2022-09-11",
+      "venue": "H",
+      "opp": "Sparta Rotterdam",
+      "gf": 3,
+      "ga": 0,
+      "res": "W",
+      "formation": "433"
+    },
+    {
+      "date": "2022-09-18",
+      "venue": "A",
+      "opp": "PSV",
+      "gf": 3,
+      "ga": 4,
+      "res": "L",
+      "formation": "4231"
+    },
+    {
+      "date": "2022-10-02",
+      "venue": "A",
+      "opp": "N.E.C.",
+      "gf": 1,
+      "ga": 1,
+      "res": "D",
+      "formation": "4231"
+    },
+    {
+      "date": "2022-10-09",
+      "venue": "H",
+      "opp": "FC Twente",
+      "gf": 2,
+      "ga": 0,
+      "res": "W",
+      "formation": "433"
+    },
+    {
+      "date": "2022-10-16",
+      "venue": "A",
+      "opp": "AZ",
+      "gf": 3,
+      "ga": 1,
+      "res": "W",
+      "formation": "433"
+    }
+  ],
+  "record": {
+    "W": 7,
+    "D": 2,
+    "L": 1,
+    "gf": 26,
+    "ga": 11
+  },
+  "formations": {
+    "4231": 5,
+    "433": 5
+  },
+  "possession_pass_share": 58.3,
+  "possession_per_match": [
+    51.8,
+    67.9,
+    59.7,
+    61.0,
+    63.5,
+    65.0,
+    51.2,
+    58.2,
+    59.4,
+    44.8
+  ],
+  "attack": {
+    "shots": 187,
+    "shots_pg": 18.7,
+    "goals": 27,
+    "xg": 18.3,
+    "xg_pg": 1.83,
+    "xg_per_shot": 0.098,
+    "box_share": 58.3,
+    "headed_goals": 4,
+    "setpiece_shots": 39,
+    "setpiece_goals": 5,
+    "setpiece_xg": 5.8,
+    "fastbreak_shots": 1,
+    "bigchances": 28
+  },
+  "defense": {
+    "shots_conceded": 97,
+    "shots_conceded_pg": 9.7,
+    "goals_conceded": 10,
+    "xga": 12.1,
+    "xga_pg": 1.21,
+    "xga_per_shot": 0.124,
+    "box_share_conceded": 72.2,
+    "setpiece_shots_conceded": 26,
+    "setpiece_goals_conceded": 3,
+    "fastbreak_shots_conceded": 4
+  },
+  "xg_per_match": [
+    1.42,
+    1.96,
+    1.92,
+    2.37,
+    3.65,
+    1.5,
+    1.0,
+    1.63,
+    1.78,
+    1.03
+  ],
+  "xga_per_match": [
+    0.49,
+    0.95,
+    1.58,
+    0.48,
+    2.52,
+    0.82,
+    3.22,
+    0.46,
+    0.75,
+    0.79
+  ],
+  "final_third_entry_flank": {
+    "left": 41.3,
+    "right": 31.8,
+    "central": 26.8
+  },
+  "crosses": {
+    "total": 189,
+    "per_game": 18.9,
+    "completed_pct": 25.4,
+    "by_flank": {
+      "left": 58.2,
+      "right": 41.8
+    }
+  },
+  "progressive_passes_pg": 22.1,
+  "long_ball_share": 10.2,
+  "press": {
+    "recovery_avg_x": 41.4,
+    "def_actions_att_third_pct": 14.5,
+    "def_actions_def_third_pct": 42.2,
+    "high_turnovers_pg": 6.8,
+    "ppda": 10.8
+  },
+  "players": {
+    "scorers": [
+      {
+        "player": "Danilo Pereira da Silva",
+        "value": 7.0
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 4.0
+      },
+      {
+        "player": "Javairô Dilrosun",
+        "value": 3.0
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 3.0
+      },
+      {
+        "player": "Patrik Wålemark",
+        "value": 2.0
+      },
+      {
+        "player": "Quinten Timber",
+        "value": 2.0
+      }
+    ],
+    "chances_created": [
+      {
+        "player": "Quinten Timber",
+        "value": 17.0
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 16.0
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 16.0
+      },
+      {
+        "player": "Javairô Dilrosun",
+        "value": 13.0
+      },
+      {
+        "player": "Marcus Pedersen",
+        "value": 10.0
+      },
+      {
+        "player": "Oussama Idrissi",
+        "value": 8.0
+      }
+    ],
+    "shots": [
+      {
+        "player": "Danilo Pereira da Silva",
+        "value": 29.0
+      },
+      {
+        "player": "Javairô Dilrosun",
+        "value": 24.0
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 21.0
+      },
+      {
+        "player": "Patrik Wålemark",
+        "value": 16.0
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 13.0
+      },
+      {
+        "player": "Quinten Timber",
+        "value": 13.0
+      }
+    ],
+    "xg": [
+      {
+        "player": "Danilo Pereira da Silva",
+        "value": 5.45
+      },
+      {
+        "player": "Dávid Hancko",
+        "value": 1.9
+      },
+      {
+        "player": "Javairô Dilrosun",
+        "value": 1.48
+      },
+      {
+        "player": "Santiago Giménez",
+        "value": 1.41
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 1.34
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 1.3
+      }
+    ],
+    "take_ons": [
+      {
+        "player": "Javairô Dilrosun",
+        "value": 16.0
+      },
+      {
+        "player": "Quinten Timber",
+        "value": 15.0
+      },
+      {
+        "player": "Marcus Pedersen",
+        "value": 8.0
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 7.0
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 6.0
+      },
+      {
+        "player": "Dávid Hancko",
+        "value": 6.0
+      }
+    ],
+    "progressive": [
+      {
+        "player": "Orkun Kökçü",
+        "value": 39.0
+      },
+      {
+        "player": "Dávid Hancko",
+        "value": 31.0
+      },
+      {
+        "player": "Gernot Trauner",
+        "value": 27.0
+      },
+      {
+        "player": "Sebastian Szymanski",
+        "value": 15.0
+      },
+      {
+        "player": "Quinten Timber",
+        "value": 14.0
+      },
+      {
+        "player": "Jacob Rasmussen",
+        "value": 14.0
+      }
+    ],
+    "passers": [
+      {
+        "player": "Gernot Trauner",
+        "value": 793.0
+      },
+      {
+        "player": "Orkun Kökçü",
+        "value": 623.0
+      },
+      {
+        "player": "Dávid Hancko",
+        "value": 503.0
+      },
+      {
+        "player": "Jacob Rasmussen",
+        "value": 473.0
+      },
+      {
+        "player": "Quinten Timber",
+        "value": 438.0
+      },
+      {
+        "player": "Lutsharel Geertruida",
+        "value": 437.0
+      },
+      {
+        "player": "Marcus Pedersen",
+        "value": 364.0
+      },
+      {
+        "player": "Javairô Dilrosun",
+        "value": 301.0
+      }
+    ]
+  },
+  "touch_leaders": [
+    {
+      "player": "Gernot Trauner",
+      "value": 1115.0
+    },
+    {
+      "player": "Orkun Kökçü",
+      "value": 888.0
+    },
+    {
+      "player": "Dávid Hancko",
+      "value": 759.0
+    },
+    {
+      "player": "Quinten Timber",
+      "value": 749.0
+    },
+    {
+      "player": "Jacob Rasmussen",
+      "value": 632.0
+    },
+    {
+      "player": "Lutsharel Geertruida",
+      "value": 614.0
+    },
+    {
+      "player": "Marcus Pedersen",
+      "value": 590.0
+    },
+    {
+      "player": "Javairô Dilrosun",
+      "value": 583.0
+    },
+    {
+      "player": "Sebastian Szymanski",
+      "value": 465.0
+    },
+    {
+      "player": "Justin Bijlow",
+      "value": 428.0
+    },
+    {
+      "player": "Danilo Pereira da Silva",
+      "value": 353.0
+    },
+    {
+      "player": "Oussama Idrissi",
+      "value": 322.0
+    },
+    {
+      "player": "Marcos López",
+      "value": 306.0
+    },
+    {
+      "player": "Alireza Jahanbakhsh",
+      "value": 292.0
+    }
+  ],
+  "most_used_xi": [
+    {
+      "player": "Justin Bijlow",
+      "pid": "184933",
+      "pos": "Goalkeeper",
+      "shirt": "1",
+      "starts": 10
+    },
+    {
+      "player": "Gernot Trauner",
+      "pid": "84807",
+      "pos": "Defender",
+      "shirt": "18",
+      "starts": 10
+    },
+    {
+      "player": "Javairô Dilrosun",
+      "pid": "198240",
+      "pos": "Striker",
+      "shirt": "11",
+      "starts": 10
+    },
+    {
+      "player": "Quinten Timber",
+      "pid": "450063",
+      "pos": "Midfielder",
+      "shirt": "8",
+      "starts": 10
+    },
+    {
+      "player": "Marcus Pedersen",
+      "pid": "450444",
+      "pos": "Defender",
+      "shirt": "2",
+      "starts": 9
+    },
+    {
+      "player": "Danilo Pereira da Silva",
+      "pid": "445123",
+      "pos": "Striker",
+      "shirt": "9",
+      "starts": 8
+    },
+    {
+      "player": "Orkun Kökçü",
+      "pid": "247962",
+      "pos": "Midfielder",
+      "shirt": "10",
+      "starts": 8
+    },
+    {
+      "player": "Dávid Hancko",
+      "pid": "235093",
+      "pos": "Defender",
+      "shirt": "33",
+      "starts": 7
+    },
+    {
+      "player": "Jacob Rasmussen",
+      "pid": "205454",
+      "pos": "Defender",
+      "shirt": "6",
+      "starts": 6
+    },
+    {
+      "player": "Lutsharel Geertruida",
+      "pid": "247955",
+      "pos": "Midfielder",
+      "shirt": "4",
+      "starts": 6
+    },
+    {
+      "player": "Sebastian Szymanski",
+      "pid": "234516",
+      "pos": "Striker",
+      "shirt": "17",
+      "starts": 6
+    },
+    {
+      "player": "Patrik Wålemark",
+      "pid": "501553",
+      "pos": "Striker",
+      "shirt": "23",
+      "starts": 4
+    },
+    {
+      "player": "Oussama Idrissi",
+      "pid": "219194",
+      "pos": "Midfielder",
+      "shirt": "26",
+      "starts": 4
+    },
+    {
+      "player": "Marcos López",
+      "pid": "226025",
+      "pos": "Defender",
+      "shirt": "15",
+      "starts": 3
+    },
+    {
+      "player": "Alireza Jahanbakhsh",
+      "pid": "165210",
+      "pos": "Midfielder",
+      "shirt": "7",
+      "starts": 3
+    },
+    {
+      "player": "Fredrik Aursnes",
+      "pid": "134103",
+      "pos": "Midfielder",
+      "shirt": "8",
+      "starts": 2
+    },
+    {
+      "player": "Santiago Giménez",
+      "pid": "432234",
+      "pos": "Striker",
+      "shirt": "29",
+      "starts": 2
+    },
+    {
+      "player": "Quilindschy Hartman",
+      "pid": "494960",
+      "pos": "Defender",
+      "shirt": "46",
+      "starts": 1
+    },
+    {
+      "player": "Fredrik Bjørkan",
+      "pid": "217242",
+      "pos": "Defender",
+      "shirt": "5",
+      "starts": 1
+    }
+  ]
+}
