@@ -295,9 +295,11 @@
     "corners": 75,
     "from_left": 48,
     "from_right": 27,
-    "to_near": 22,
-    "to_far": 28,
+    "box_deliveries": 70,
+    "to_near": 42,
+    "to_far": 8,
     "to_central": 20,
+    "main_target": "near",
     "short_pct": 5,
     "completed_pct": 59
   },

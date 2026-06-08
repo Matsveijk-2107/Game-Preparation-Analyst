@@ -125,11 +125,23 @@ def setpiece_delivery(ev):
     res = {"corners": int(len(corners)),
            "from_left": int(side.get("left", 0)),
            "from_right": int(side.get("right", 0))}
-    # delivery target (end zone) for box deliveries (end_x>=83)
-    box = corners[(corners.end_x >= 83)]
-    res["to_near"] = int((box.end_y < 45).sum()) if "end_y" in box else 0
-    res["to_far"] = int((box.end_y > 55).sum())
-    res["to_central"] = int(box.end_y.between(45, 55).sum())
+    # delivery target zone RELATIVE to the corner side (near/far post is defined
+    # by which side the corner is taken from, not by absolute pitch y).
+    box = corners[(corners.end_x >= 83) & corners.end_y.notna()]
+    near = far = central = 0
+    for r in box.itertuples():
+        if 45 <= r.end_y <= 55:
+            central += 1
+        elif r.y > 66.67:                 # left corner -> near post is high y
+            near += 1 if r.end_y > 55 else 0
+            far += 1 if r.end_y < 45 else 0
+        elif r.y < 33.33:                 # right corner -> near post is low y
+            near += 1 if r.end_y < 45 else 0
+            far += 1 if r.end_y > 55 else 0
+    res["box_deliveries"] = int(len(box))
+    res["to_near"], res["to_far"], res["to_central"] = near, far, central
+    res["main_target"] = "near" if near >= far and near >= central else (
+        "far" if far >= central else "central")
     short = corners[(corners.end_x < 80)]
     res["short_pct"] = round(100 * len(short) / max(len(corners), 1))
     res["completed_pct"] = round(100 * (corners.outcome == 1).mean()) if len(corners) else 0

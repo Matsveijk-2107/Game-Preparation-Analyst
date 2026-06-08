@@ -29,21 +29,27 @@ def fig_radar(name, fname):
     vals = EXT["radars"][name]["values"]
     n = len(axes_lbl)
     ang = np.linspace(0, 2 * np.pi, n, endpoint=False)
-    ang = np.r_[ang, ang[:1]]
+    ang_c = np.r_[ang, ang[:1]]
     v = np.r_[vals, vals[:1]]
-    fig, ax = plt.subplots(figsize=(4.4, 4.4), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(4.7, 4.7), subplot_kw=dict(polar=True))
+    fig.subplots_adjust(left=0.22, right=0.78, top=0.82, bottom=0.18)
     fig.patch.set_facecolor(T.INK); ax.set_facecolor(T.INK)
     ax.set_theta_offset(np.pi / 2); ax.set_theta_direction(-1)
     for r in (25, 50, 75, 100):
         ax.plot(np.linspace(0, 2 * np.pi, 200), [r] * 200, color=T.LINE, lw=0.6, alpha=0.6)
-    ax.plot(ang, v, color=T.FEY, lw=2.3)
-    ax.fill(ang, v, color=T.FEY, alpha=0.32)
-    ax.scatter(ang[:-1], v[:-1], color=T.FEY, s=22, zorder=5, edgecolor=T.EDGE, lw=0.8)
-    ax.set_xticks(ang[:-1])
-    ax.set_xticklabels(axes_lbl, fontsize=7.6, color=T.MUTE, fontfamily=T.BODY_FONT)
-    ax.set_yticks([]); ax.set_ylim(0, 100)
+    ax.plot(ang_c, v, color=T.FEY, lw=2.3, zorder=4)
+    ax.fill(ang_c, v, color=T.FEY, alpha=0.30, zorder=3)
+    ax.scatter(ang, vals, color=T.FEY, s=22, zorder=5, edgecolor=T.EDGE, lw=0.8)
+    ax.set_xticks([]); ax.set_yticks([]); ax.set_ylim(0, 106)
     ax.spines["polar"].set_color(T.LINE)
-    ax.set_title("percentile vs squad", fontsize=7.5, color=T.FAINT, pad=8)
+    # spoke labels placed OUTSIDE the ring with angle-based alignment (no clipping)
+    for a, lbl in zip(ang, axes_lbl):
+        hx, vy = np.sin(a), np.cos(a)
+        ha = "center" if abs(hx) < 0.35 else ("left" if hx > 0 else "right")
+        va = "center" if abs(vy) < 0.35 else ("bottom" if vy > 0 else "top")
+        ax.text(a, 122, lbl, ha=ha, va=va, fontsize=7.0, color=T.MUTE,
+                fontfamily=T.BODY_FONT, zorder=6, clip_on=False, linespacing=1.0)
+    ax.set_title("percentile vs squad", fontsize=7.5, color=T.FAINT, pad=12, y=1.12)
     return save(fig, fname)
 
 
@@ -56,20 +62,22 @@ def fig_rankbars():
         ("Chances created", "chances", T.CB_BLUE), ("Take-ons", "take_ons", T.GREEN),
         ("Progressive passes", "prog", T.CB_BLUE), ("Ball recoveries", "recoveries", T.GREEN),
     ]
-    fig, axes = plt.subplots(2, 3, figsize=(11.5, 5.0))
-    fig.subplots_adjust(left=0.10, right=0.985, top=0.92, bottom=0.05,
-                        wspace=0.95, hspace=0.42)
+    fig, axes = plt.subplots(2, 3, figsize=(11.5, 5.4))
+    fig.subplots_adjust(left=0.10, right=0.985, top=0.90, bottom=0.06,
+                        wspace=0.95, hspace=0.62)
     for ax, (title, col, color) in zip(axes.ravel(), panels):
         d = PT.sort_values(col, ascending=False).head(8)[::-1]
         labels = [short(p) for p in d.player]
         y = np.arange(len(d))
-        ax.barh(y, d[col], color=color, alpha=0.85, height=0.66)
+        m = float(d[col].max()) or 1
+        ax.barh(y, d[col], color=color, alpha=0.88, height=0.64)
+        ax.set_xlim(0, m * 1.18)
         ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=7.6, color=T.TEXT)
         ax.set_title(title, fontsize=10, color=T.TEXT, fontfamily=T.HEAD_FONT,
-                     weight="bold", loc="left", pad=6)
+                     weight="bold", loc="left", pad=10)
         for i, v in enumerate(d[col]):
-            ax.text(v, i, f" {v:.1f}" if col == "xg" else f" {int(v)}",
-                    va="center", fontsize=7.4, color=T.MUTE)
+            ax.text(v + m * 0.02, i, f"{v:.1f}" if col == "xg" else f"{int(v)}",
+                    va="center", ha="left", fontsize=7.4, color=T.MUTE)
         for s in ["top", "right", "bottom"]:
             ax.spines[s].set_visible(False)
         ax.spines["left"].set_color(T.LINE); ax.tick_params(length=0); ax.set_xticks([])
@@ -92,11 +100,11 @@ def fig_attackzones():
         for key, xc, col in lanes:
             share = z[key]
             w = 3 + share / 100 * 22
-            ax.annotate("", xy=(xc, 86), xytext=(xc, 55),
+            ax.annotate("", xy=(xc, 88), xytext=(xc, 62),
                         arrowprops=dict(arrowstyle="-|>", color=col,
                                         lw=w / 3, alpha=0.45 + share / 200,
                                         mutation_scale=18))
-            ax.text(xc, 48, f"{int(share)}%", ha="center", va="top", fontsize=12,
+            ax.text(xc, 34, f"{int(share)}%", ha="center", va="center", fontsize=13,
                     color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold",
                     path_effects=STROKE)
         ax.set_title(ttl, fontsize=10, color=T.MUTE, fontfamily=T.HEAD_FONT,
@@ -120,24 +128,25 @@ def fig_transition():
     high = rec[rec.x >= 66.67]; mid = rec[(rec.x >= 33.33) & (rec.x < 66.67)]
     low = rec[rec.x < 33.33]
     p1.scatter(low.x, low.y, ax=ax1, s=24, color=T.FAINT, alpha=0.5)
-    p1.scatter(mid.x, mid.y, ax=ax1, s=30, color=T.CB_BLUE, alpha=0.6)
-    p1.scatter(high.x, high.y, ax=ax1, s=60, color=T.GREEN, alpha=0.85,
+    p1.scatter(mid.x, mid.y, ax=ax1, s=30, color=T.WARN, alpha=0.55)
+    p1.scatter(high.x, high.y, ax=ax1, s=60, color=T.CB_BLUE, alpha=0.9,
                edgecolor=T.EDGE, linewidth=0.6)
-    ax1.axvline(rec.x.mean(), color=T.GOAL, lw=1.6, ls=(0, (5, 3)))
-    ax1.set_title("WHERE THEY WIN IT BACK  ·  green = high turnovers",
+    ax1.plot([rec.x.mean(), rec.x.mean()], [0, 100], color=T.GOAL, lw=1.6, ls=(0, (5, 3)))
+    ax1.set_title("WHERE THEY WIN IT BACK  ·  blue = high turnovers",
                   fontsize=9, color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold", pad=6)
-    ax1.text(2, 2, "Attacking  →", fontsize=8, color=T.MUTE, fontfamily=T.BODY_FONT)
+    ax1.text(2, -4, "Attacking  →", fontsize=8, color=T.MUTE, fontfamily=T.BODY_FONT,
+             clip_on=False)
     # right: where they concede (final third, attacking towards goal)
     ax2 = fig.add_axes([0.52, 0.06, 0.46, 0.88])
     p2 = VerticalPitch(pitch_type="opta", half=True, pad_bottom=-12,
                        pitch_color=T.INK, line_color=T.LINE, linewidth=1.0)
     p2.draw(ax=ax2)
     g = osh[osh.is_goal]; o = osh[~osh.is_goal]
-    p2.scatter(o.x, o.y, ax=ax2, s=40 + o.xg * 900, color=T.CB_BLUE, alpha=0.45)
-    p2.scatter(g.x, g.y, ax=ax2, s=70 + g.xg * 1100, color=T.WARN, alpha=0.95,
+    p2.scatter(o.x, o.y, ax=ax2, s=40 + o.xg * 900, color=T.WARN, alpha=0.45)
+    p2.scatter(g.x, g.y, ax=ax2, s=70 + g.xg * 1100, color=T.GOAL, alpha=0.95,
                edgecolor=T.EDGE, linewidth=0.7)
     ax2.set_ylim(54, 103)
-    ax2.set_title("WHERE THEY GET PUNISHED  ·  orange = goals conceded",
+    ax2.set_title("WHERE THEY GET PUNISHED  ·  blue = goals conceded",
                   fontsize=9, color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold", pad=6)
     return save(fig, "12_transition.png")
 

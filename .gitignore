@@ -4,9 +4,11 @@
 
 # --- Inspection artifacts (page & slide renders) ----------------------------
 /output/pages/
+/output/pages_nl/
 /output/deck_pages/
 /output/ac/
 /output/deck/
+/output/_zoom/
 
 # --- Python -----------------------------------------------------------------
 __pycache__/

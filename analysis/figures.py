@@ -10,6 +10,7 @@ from mplsoccer import Pitch, VerticalPitch
 from scipy.ndimage import gaussian_filter
 from matplotlib.colors import LinearSegmentedColormap
 import theme as T
+from report_content import L
 from parse import (load_team, SHOT_TYPES, DEF_ACTION_TYPES, TYPE_PASS,
                    TYPE_BALL_RECOVERY)
 
@@ -17,15 +18,15 @@ STROKE = [pe.withStroke(linewidth=2.4, foreground=T.STROKE_BG)]
 
 
 def attack_arrow(ax, x=2, y=2):
-    ax.text(x, y, "Attacking  →", fontsize=9, color=T.MUTE,
+    ax.text(x, y, L("Attacking  →"), fontsize=9, color=T.MUTE,
             fontfamily=T.BODY_FONT)
 
 
 # house-style colormaps (paper/ink -> Feyenoord red -> bright)
 CMAP_RED = LinearSegmentedColormap.from_list(
-    "fey_red", [T.INK, "#3A0A14", T.FEY_D, T.FEY, "#FF5A78"])
+    "cb_blue", [T.INK, "#D6E6F7", "#5FA0E0", T.CB_BLUE, T.CB_BLUE_D])
 CMAP_COOL = LinearSegmentedColormap.from_list(
-    "fey_cool", [T.INK, "#0E2238", T.CB_BLUE_D, T.CB_BLUE, "#7FB6F0"])
+    "cb_grey", [T.INK, "#DCE3EC", "#94A3B5", "#56657A", "#2A323D"])
 
 T.apply()
 FIG = os.path.join(os.path.dirname(__file__), "..", "output", "figures")
@@ -70,17 +71,18 @@ def fig_form():
     x = np.arange(M)
     T.style_axes(ax, grid=True)
     # bklit-style gradient areas
-    T.gradient_area(ax, x, xg, T.FEY, lw=2.8, alpha=0.50, label="xG for")
-    T.gradient_area(ax, x, xga, T.CB_BLUE, lw=2.4, alpha=0.42, label="xG against")
+    T.gradient_area(ax, x, xg, T.FEY, lw=2.8, alpha=0.50, label=L("xG for"))
+    T.gradient_area(ax, x, xga, T.CB_BLUE, lw=2.4, alpha=0.42, label=L("xG against"))
     for i, g in enumerate(games):
-        col = {"W": T.GREEN, "D": T.MUTE, "L": T.WARN}[g["res"]]
+        col = {"W": T.CB_BLUE, "D": T.MUTE, "L": T.WARN}[g["res"]]
         ax.text(i, -0.62, f"{g['venue']} {short(g['opp'])[:8]}", rotation=40,
                 ha="right", va="top", fontsize=7.5, color=T.MUTE)
-        ax.text(i, max(xg[i], xga[i]) + 0.30, f"{g['gf']}-{g['ga']}",
-                ha="center", fontsize=8.5, color=col, fontfamily=T.HEAD_FONT, weight="bold")
-    ax.set_xlim(-0.4, M - 0.6); ax.set_ylim(0, 4.4)
+        ax.text(i, max(xg[i], xga[i]) + 0.46, f"{g['gf']}-{g['ga']}",
+                ha="center", fontsize=8.5, color=col, fontfamily=T.HEAD_FONT,
+                weight="bold", path_effects=STROKE)
+    ax.set_xlim(-0.4, M - 0.6); ax.set_ylim(0, 4.8)
     ax.set_xticks([])
-    ax.set_ylabel("Expected goals", fontsize=9, color=T.MUTE)
+    ax.set_ylabel(L("Expected goals"), fontsize=9, color=T.MUTE)
     leg = ax.legend(loc="upper right", frameon=False, fontsize=9.5,
                     labelcolor=T.TEXT, ncol=2, bbox_to_anchor=(1.0, 1.17),
                     handlelength=1.3)
@@ -96,16 +98,16 @@ def fig_momentum():
     fig, ax = plt.subplots(figsize=(9.6, 3.0))
     fig.subplots_adjust(left=0.06, right=0.985, top=0.80, bottom=0.16)
     T.style_axes(ax, grid=True)
-    T.gradient_area(ax, x, gf, T.FEY, lw=2.8, alpha=0.50, label="goals for")
-    T.gradient_area(ax, x, ga, T.CB_BLUE, lw=2.4, alpha=0.40, label="goals against")
-    ax.text(M - 1, gf[-1] + 0.6, f"{int(gf[-1])}", color=T.FEY, fontsize=12,
-            fontfamily=T.HEAD_FONT, weight="bold", ha="center")
-    ax.text(M - 1, ga[-1] + 0.6, f"{int(ga[-1])}", color=T.CB_BLUE, fontsize=11,
-            fontfamily=T.HEAD_FONT, weight="bold", ha="center")
-    ax.set_xlim(-0.2, M - 0.8); ax.set_ylim(0, max(gf) + 3)
+    T.gradient_area(ax, x, gf, T.FEY, lw=2.8, alpha=0.50, label=L("goals for"))
+    T.gradient_area(ax, x, ga, T.CB_BLUE, lw=2.4, alpha=0.40, label=L("goals against"))
+    ax.text(M - 1.18, gf[-1], f"{int(gf[-1])}", color=T.FEY, fontsize=13,
+            fontfamily=T.HEAD_FONT, weight="bold", ha="right", va="center")
+    ax.text(M - 1.18, ga[-1], f"{int(ga[-1])}", color=T.CB_BLUE, fontsize=12,
+            fontfamily=T.HEAD_FONT, weight="bold", ha="right", va="center")
+    ax.set_xlim(-0.2, M - 0.7); ax.set_ylim(0, max(gf) + 5)
     ax.set_xticks(x)
     ax.set_xticklabels([f"MD{i+1}" for i in range(M)], fontsize=7.5, color=T.MUTE)
-    ax.set_ylabel("Cumulative goals", fontsize=9, color=T.MUTE)
+    ax.set_ylabel(L("Cumulative goals"), fontsize=9, color=T.MUTE)
     ax.legend(loc="upper left", frameon=False, fontsize=9.5, labelcolor=T.TEXT,
               ncol=2, handlelength=1.3)
     return save(fig, "09_momentum.png")
@@ -167,6 +169,7 @@ def fig_network():
     tmax = max(touch.values()) if touch else 1
     cxn = np.mean([p[0] for p in pos.values()])
     cyn = np.mean([p[1] for p in pos.values()])
+    # nodes + shirt numbers
     for p, (x, y) in pos.items():
         s = 190 + 560 * touch[p] / tmax
         pitch.scatter([x], [y], s=s, ax=ax, facecolor=T.FEY, edgecolor=T.TEXT,
@@ -175,17 +178,30 @@ def fig_network():
         ax.text(x, y, str(sh), ha="center", va="center", fontsize=8,
                 color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold", zorder=6,
                 path_effects=STROKE)
-        # push the name label radially outward from the cluster centroid
-        ang = np.arctan2(y - cyn, x - cxn)
-        if abs(y - cyn) < 1 and abs(x - cxn) < 1:
-            ang = -np.pi / 2
-        lx, ly = x + 6.2 * np.cos(ang), y + 5.0 * np.sin(ang)
-        ax.text(lx, ly, short(p), ha="center", va="center", fontsize=7.4,
+    # label anchors pushed radially outward, then de-collided (repel)
+    names = list(pos.keys())
+    nx = np.array([pos[p][0] for p in names], float)
+    ny = np.array([pos[p][1] for p in names], float)
+    ang = np.arctan2(ny - cyn, nx - cxn)
+    ang = np.where((np.abs(ny - cyn) < 1) & (np.abs(nx - cxn) < 1), -np.pi / 2, ang)
+    lx = nx + 7.0 * np.cos(ang)
+    ly = ny + 6.0 * np.sin(ang)
+    min_x, min_y = 9.0, 4.6           # min label separation (pitch units)
+    for _ in range(80):
+        for i in range(len(names)):
+            for j in range(i + 1, len(names)):
+                dx, dy = lx[i] - lx[j], ly[i] - ly[j]
+                if abs(dx) < min_x and abs(dy) < min_y:
+                    push = (min_y - abs(dy)) / 2 + 0.3
+                    s = 1 if dy >= 0 else -1
+                    ly[i] += s * push; ly[j] -= s * push
+    for i, p in enumerate(names):
+        ax.text(lx[i], ly[i], short(p), ha="center", va="center", fontsize=7.4,
                 color=T.TEXT, zorder=7, path_effects=STROKE)
-    # crop to the active region so the figure isn't lopsided / mostly empty
-    xs = [p[0] for p in pos.values()]
-    ax.set_xlim(min(xs) - 12, max(xs) + 14)
-    attack_arrow(ax, x=min(xs) - 10, y=3)
+    # crop to the active region with room for labels on both sides
+    ax.set_xlim(nx.min() - 14, nx.max() + 18)
+    ax.set_ylim(min(ny.min(), ly.min()) - 6, max(ny.max(), ly.max()) + 6)
+    attack_arrow(ax, x=nx.min() - 12, y=ly.min() - 3)
     return save(fig, "03_network.png")
 
 
@@ -203,16 +219,21 @@ def fig_territory():
     bs = pitch.bin_statistic(tp.end_x, tp.end_y, statistic="count", bins=(12, 12))
     bs["statistic"] = gaussian_filter(bs["statistic"], 0.8)
     pitch.heatmap(bs, ax=ax, cmap=CMAP_RED, alpha=0.95, zorder=1)
-    # flank guide lines
+    # flank guide lines only across the final third (where the data is)
     for yy in (33.33, 66.67):
-        ax.axhline(yy, color=T.LINE, lw=0.8, ls=(0, (4, 4)), zorder=3, alpha=0.7)
+        ax.plot([66.67, 100], [yy, yy], color=T.LINE, lw=0.8, ls=(0, (4, 4)),
+                zorder=3, alpha=0.7)
+    # flank readouts in the clear left (defensive) paper area, aligned to each band
     f = MET["final_third_entry_flank"]
-    for yc, key, lab in [(83, "left", "LEFT"), (50, "central", "CENTRAL"),
-                         (17, "right", "RIGHT")]:
-        ax.text(50, yc, f"{lab}\n{f[key]}%", ha="center", va="center",
-                fontsize=12, color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold",
-                zorder=5, path_effects=STROKE)
-    ax.text(50, 104, "Where Feyenoord enter the final third  (pass end-points)",
+    ax.text(20, 96, L("FINAL-THIRD ENTRIES"), ha="center", fontsize=9, color=T.FEY,
+            fontfamily=T.HEAD_FONT, weight="bold")
+    for yc, key, lab in [(80, "left", "LEFT"), (50, "central", "CENTRAL"),
+                         (20, "right", "RIGHT")]:
+        ax.text(20, yc + 3.5, f"{f[key]:.0f}%", ha="center", va="center",
+                fontsize=20, color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold")
+        ax.text(20, yc - 6, L(lab), ha="center", va="center", fontsize=9,
+                color=T.MUTE, fontfamily=T.BODY_FONT)
+    ax.text(83, 104, L("Where Feyenoord enter the final third (pass end-points)"),
             ha="center", fontsize=9.5, color=T.MUTE, fontfamily=T.BODY_FONT)
     attack_arrow(ax)
     return save(fig, "04_territory.png")
@@ -231,14 +252,17 @@ def fig_press():
     bs["statistic"] = gaussian_filter(bs["statistic"], 0.9)
     pitch.heatmap(bs, ax=ax, cmap=CMAP_COOL, alpha=0.85, zorder=1)
     mx = rec.x.mean()
-    ax.axvline(mx, color=T.GOAL, lw=2, ls=(0, (5, 3)), zorder=3)
-    ax.text(mx + 1, 64, f"avg recovery\nx = {mx:.0f}", color=T.GOAL, fontsize=8.5,
-            fontfamily=T.HEAD_FONT, weight="bold", zorder=4, va="top")
+    # cap the line to the pitch so it never reaches the title
+    ax.plot([mx, mx], [0, 100], color=T.GOAL, lw=2, ls=(0, (5, 3)), zorder=3)
+    ax.text(mx + 2, 95, f"{L('avg recovery  x=')}{mx:.0f}", color=T.TEXT, fontsize=8.5,
+            fontfamily=T.HEAD_FONT, weight="bold", zorder=6, va="center", ha="left",
+            bbox=dict(boxstyle="round,pad=0.3", fc=T.INK, ec=T.GOAL, lw=0.8, alpha=0.92))
     p = MET["press"]
-    ax.text(50, 104, f"PPDA {p['ppda']}   high turnovers {p['high_turnovers_pg']}/game   "
-            f"def-third actions {p['def_actions_def_third_pct']}%",
+    ax.text(50, 105, f"PPDA {p['ppda']}   ·   {L('high turnovers')} {p['high_turnovers_pg']}{L('/game')}"
+            f"   ·   {L('def-third actions')} {p['def_actions_def_third_pct']}%",
             ha="center", fontsize=9.5, color=T.MUTE, fontfamily=T.BODY_FONT)
-    attack_arrow(ax)
+    ax.text(2, 3, L("Attacking  →"), fontsize=9, color=T.TEXT, fontfamily=T.BODY_FONT,
+            zorder=6, path_effects=STROKE)
     return save(fig, "05_press.png")
 
 
@@ -274,8 +298,8 @@ def fig_setpiece():
                           pitch_color=T.INK, line_color=T.LINE, linewidth=1.2)
     fig, axes = pitch.draw(figsize=(9.4, 5.2), ncols=2)
     for ax, df, col, ttl in [
-            (axes[0], sf, T.FEY, f"THREAT  •  {len(sf)} shots / {int(sf.is_goal.sum())} goals / {sf.xg.sum():.1f} xG"),
-            (axes[1], sa, T.WARN, f"CONCEDED  •  {len(sa)} shots / {int(sa.is_goal.sum())} goals / {sa.xg.sum():.1f} xG")]:
+            (axes[0], sf, T.FEY, f"{L('THREAT')}  •  {len(sf)} {L('shots')} / {int(sf.is_goal.sum())} {L('goals')} / {sf.xg.sum():.1f} xG"),
+            (axes[1], sa, T.WARN, f"{L('CONCEDED')}  •  {len(sa)} {L('shots')} / {int(sa.is_goal.sum())} {L('goals')} / {sa.xg.sum():.1f} xG")]:
         g = df[df.is_goal]; o = df[~df.is_goal]
         pitch.scatter(o.x, o.y, s=70 + o.xg * 1200, ax=ax, facecolor=col,
                       edgecolor="none", alpha=0.45)
@@ -294,33 +318,106 @@ def fig_players():
     fig, axes = plt.subplots(1, 3, figsize=(9.6, 4.4))
     fig.subplots_adjust(left=0.16, right=0.97, top=0.84, bottom=0.08, wspace=1.25)
     panels = [
-        ("Goals + xG", MET["players"]["xg"], MET["players"]["scorers"], T.FEY),
-        ("Chances created", MET["players"]["chances_created"], None, T.CB_BLUE),
-        ("Take-ons completed", MET["players"]["take_ons"], None, T.GREEN),
+        (L("Goals + xG"), MET["players"]["xg"], MET["players"]["scorers"], T.FEY),
+        (L("Chances created"), MET["players"]["chances_created"], None, T.CB_BLUE),
+        (L("Take-ons completed"), MET["players"]["take_ons"], None, T.GREEN),
     ]
     for ax, (title, series, overlay, col) in zip(axes, panels):
         series = series[:6][::-1]
         labels = [short(d["player"]) for d in series]
         vals = [d["value"] for d in series]
         y = np.arange(len(series))
-        ax.barh(y, vals, color=col, alpha=0.85, height=0.66)
-        if overlay:  # goals overlay on xG panel
-            gmap = {short(d["player"]): d["value"] for d in overlay}
-            gv = [gmap.get(l, 0) for l in labels]
-            ax.scatter(gv, y, color=T.GOAL, s=42, zorder=4, edgecolor=T.EDGE, lw=0.6)
+        m = max(vals) if vals else 1
+        ax.barh(y, vals, color=col, alpha=0.88, height=0.62)
+        ax.set_xlim(0, m * 1.40)
         ax.set_yticks(y); ax.set_yticklabels(labels, fontsize=8.5, color=T.TEXT)
         ax.set_title(title, fontsize=10.5, color=T.TEXT, fontfamily=T.HEAD_FONT,
-                     weight="bold", loc="left", pad=8)
+                     weight="bold", loc="left", pad=12)
         for i, v in enumerate(vals):
-            ax.text(v, i, f" {v:.0f}" if v == int(v) else f" {v:.1f}",
-                    va="center", fontsize=8, color=T.MUTE)
+            ax.text(v + m * 0.02, i, f"{v:.0f}" if v == int(v) else f"{v:.1f}",
+                    va="center", ha="left", fontsize=8, color=T.MUTE)
+        if overlay:  # goals as a fixed gold column on the right (xG panel)
+            gmap = {short(d["player"]): d["value"] for d in overlay}
+            for i, lbl in enumerate(labels):
+                g = gmap.get(lbl, 0)
+                if g:
+                    ax.text(m * 1.36, i, f"{int(g)}G", va="center", ha="right",
+                            fontsize=8.5, color=T.GOAL, fontfamily=T.HEAD_FONT,
+                            weight="bold")
         for s in ["top", "right", "bottom"]:
             ax.spines[s].set_visible(False)
         ax.spines["left"].set_color(T.LINE)
         ax.tick_params(length=0); ax.set_xticks([])
-    axes[0].text(0, 1.18, "gold dot = goals scored", transform=axes[0].transAxes,
-                 fontsize=8, color=T.GOAL)
+    fig.text(0.5, 0.015, L("Goals + xG panel: bars = xG · blue number = goals scored"),
+             ha="center", fontsize=8, color=T.MUTE, fontfamily=T.BODY_FONT)
     return save(fig, "08_players.png")
+
+
+# ---------------------------------------------------------------------------
+# 17. Probable XI — most-used eleven in a 4-3-3 shape (their more potent shape)
+# ---------------------------------------------------------------------------
+def fig_probable_xi():
+    # most-used eleven in a clean 4-3-3. coords are Opta (x = length toward goal,
+    # y = width; left = high y to match the dossier convention).
+    xi = [
+        ("1", "Bijlow", 9, 50),
+        ("15", "López", 26, 84), ("33", "Hancko", 23, 61),
+        ("18", "Trauner", 23, 39), ("2", "Pedersen", 26, 16),
+        ("10", "Kökçü", 44, 50), ("8", "Timber", 54, 66), ("17", "Szymański", 54, 34),
+        ("26", "Idrissi", 78, 84), ("9", "Danilo", 86, 50), ("11", "Dilrosun", 78, 16),
+    ]
+    pitch = VerticalPitch(pitch_type="opta", pitch_color=T.INK, line_color=T.LINE,
+                          linewidth=1.2, line_zorder=2, half=False)
+    fig, ax = pitch.draw(figsize=(6.0, 8.4))
+    for sh, name, x, y in xi:
+        pitch.scatter([x], [y], s=620, ax=ax, facecolor=T.FEY, edgecolor=T.TEXT,
+                      linewidth=1.3, alpha=0.96, zorder=4)
+        pitch.annotate(sh, (x, y), ax=ax, ha="center", va="center", fontsize=11,
+                       color=T.TEXT, fontfamily=T.HEAD_FONT, weight="bold", zorder=5)
+        pitch.annotate(name, (x - 5.2, y), ax=ax, ha="center", va="center",
+                       fontsize=8.6, color=T.TEXT, fontfamily=T.BODY_FONT, zorder=5,
+                       path_effects=STROKE)
+    pitch.annotate(L("Attacking  →"), (3, 6), ax=ax, fontsize=9, color=T.FAINT,
+                   fontfamily=T.BODY_FONT, ha="left")
+    return save(fig, "17_probable_xi.png")
+
+
+# ---------------------------------------------------------------------------
+# 18. Corner delivery and first contact
+# ---------------------------------------------------------------------------
+def fig_corner():
+    tp = TEAM[(TEAM.type_id == TYPE_PASS) & (TEAM.is_corner)].copy()
+    box = tp[(tp.end_x >= 80) & tp.end_y.notna()]    # deliveries into the box
+    sh = TEAM[(TEAM.type_id.isin(SHOT_TYPES)) & (TEAM.from_corner)].copy()  # corner-only
+    pitch = VerticalPitch(pitch_type="opta", half=True, pad_bottom=-8,
+                          pitch_color=T.INK, line_color=T.LINE, linewidth=1.2)
+    fig, ax = pitch.draw(figsize=(6.6, 6.2))
+    ax.set_ylim(62, 104)
+    # delivery target points (where the ball is aimed)
+    pitch.scatter(box.end_x, box.end_y, s=72, ax=ax, facecolor=T.FEY,
+                  edgecolor="none", alpha=0.30, zorder=3)
+    # resulting shots = first contact, sized by xg
+    g = sh[sh.is_goal]; o = sh[~sh.is_goal]
+    pitch.scatter(o.x, o.y, s=70 + o.xg * 1200, ax=ax, facecolor=T.WARN,
+                  edgecolor="none", alpha=0.55, zorder=4)
+    pitch.scatter(g.x, g.y, s=110 + g.xg * 1400, ax=ax, facecolor=T.GOAL,
+                  edgecolor=T.EDGE, linewidth=0.8, alpha=0.95, zorder=5)
+    # corner origins + flow arrows to the NEAR post (both sides aim near)
+    pitch.scatter([100, 100], [99.5, 0.5], s=120, ax=ax, facecolor=T.FEY,
+                  edgecolor=T.TEXT, lw=1.0, zorder=6)
+    pitch.lines(100, 100, 95, 58, ax=ax, color=T.FEY, lw=3.0, alpha=0.6, comet=True, zorder=4)
+    pitch.lines(100, 0, 95, 42, ax=ax, color=T.FEY, lw=3.0, alpha=0.6, comet=True, zorder=4)
+    sd = json_more()["setpiece_delivery"]
+    ax.text(50, 105, f"{sd['from_left']} {L('left corners')} / {sd['from_right']} {L('right corners')} · "
+            f"{L('mostly to the near post')} · {sd['short_pct']}% {L('short corners')}",
+            ha="center", fontsize=8.6, color=T.MUTE, fontfamily=T.BODY_FONT)
+    return save(fig, "18_corner.png")
+
+
+def json_more():
+    import json as _j
+    return _j.load(open(os.path.join(os.path.dirname(__file__), "..", "output",
+                                     "metrics_more.json"), encoding="utf-8"))
 
 
 if __name__ == "__main__":
@@ -333,4 +430,6 @@ if __name__ == "__main__":
     fig_vulnerability()
     fig_setpiece()
     fig_players()
+    fig_probable_xi()
+    fig_corner()
     print("all figures done")

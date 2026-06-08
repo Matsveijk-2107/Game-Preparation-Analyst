@@ -1,5 +1,5 @@
 """
-Feyenoord opposition analysis — landscape 16:9 presentation deck.
+Feyenoord opposition analysis, landscape 16:9 presentation deck.
 Fuses data-rich figures with an analyst INSIGHT rail + recommendations,
 weekly player-comms plan, and authentic video-clip references.
 """
@@ -168,7 +168,7 @@ def s_exec(pdf):
     chip_row(ax, MX + 0.01, 0.79, 1 - 2 * MX - 0.02, [
         (f"{r['W']}-{r['D']}-{r['L']}", "W-D-L"), (f"{r['gf']}-{r['ga']}", "goals"),
         ("58%", "possession"), (a["shots_pg"], "shots/game"), (a["xg_pg"], "xG/game"),
-        (a["goals"], "goals (18.3 xG)"), (d["shots_conceded_pg"], "shots conceded/g"),
+        (r["gf"], "goals (18.3 xG)"), (d["shots_conceded_pg"], "shots conceded/g"),
         (d["xga_pg"], "xGA/game")], vcolor=T.TEXT, vsize=17)
     # five keys, two columns
     H(ax, MX, 0.69, "FIVE THINGS THAT DECIDE THE GAME", 13, T.TEXT, va="top")
@@ -221,9 +221,14 @@ def s_players_radar(pdf, n, names, title):
         x0 = MX + i * (cw + 0.02)
         panel(ax, x0, 0.06, cw, 0.80)
         ax.add_patch(Rectangle((x0, 0.85), cw, 0.006, color=T.FEY, zorder=2))
-        # name/role
-        card = cards.get(nm)
-        disp = nm
+        # name/role. The radar PNG + EXT stats are keyed by the names passed in
+        # (Szymanski without its diacritic, Danilo by full name); the card copy is keyed
+        # by the canonical short name. Resolve display + card explicitly so the role and
+        # scouting note still render.
+        CARD_ALIAS = {"Sebastian Szymanski": "Sebastian Szymański",
+                      "Danilo Pereira da Silva": "Danilo"}
+        disp = {"Sebastian Szymanski": "Sebastian Szymański"}.get(nm, nm)
+        card = cards.get(nm) or cards.get(CARD_ALIAS.get(nm, nm))
         H(ax, x0 + 0.015, 0.825, disp, 12.5, T.TEXT, va="center")
         if card:
             H(ax, x0 + 0.015, 0.80, card[1], 8, T.FEY, va="center")
@@ -281,21 +286,21 @@ def s_week(pdf):
 
 def s_matchplan(pdf):
     fig, ax = new_slide()
-    ax.add_patch(Rectangle((0, 0.9), 1, 0.1, color=T.FEY, zorder=0))
-    H(ax, MX, 0.945, "MATCHPLAN — FEYENOORD", 22, T.TEXT, va="center")
+    ax.add_patch(Rectangle((0, 0.9), 1, 0.1, color=T.CB_BLUE, zorder=0))
+    H(ax, MX, 0.945, "MATCHPLAN · FEYENOORD", 22, "#FFFFFF", va="center")
     emblem(fig, (1 - MX - 0.05, 0.905, 1 - MX, 0.99))
-    H(ax, 1 - MX - 0.06, 0.945, "ONE PAGE · PIN IT UP", 9, T.TEXT, ha="right",
-      va="center", alpha=0.85)
+    H(ax, 1 - MX - 0.06, 0.945, "ONE PAGE · PIN IT UP", 9, "#FFFFFF", ha="right",
+      va="center", alpha=0.9)
     cols = [
         ("THEIR THREAT", T.FEY, [
             "Left-loading possession side (58% ball, 18.7 shots/g)",
             "Build through Kökçü; left overload (41% entries, 58% crosses)",
-            "Clinical: 27 goals from 18.3 xG · 28 big chances",
+            "Clinical: 26 goals from 18.3 xG · 28 big chances",
             "Set-piece danger: 5 SP goals (Trauner, Hancko)",
         ]),
         ("THEIR WEAKNESS", T.WARN, [
             "Concede few but HIGH-quality chances (0.124 xGA/shot)",
-            "72% of shots conceded inside the box — on transition",
+            "72% of shots conceded inside the box, on transition",
             "High line + committed full-backs = space in behind",
             "3 set-piece goals conceded in 10 games",
         ]),
@@ -303,7 +308,7 @@ def s_matchplan(pdf):
             "Win-it-and-go: attack in behind the full-backs FAST",
             "Make it transitional, not a possession contest",
             "Compact block, screen Kökçü, force them to cross from deep",
-            "Win the box both ends — set pieces are our route",
+            "Win the box both ends, set pieces are our route",
         ]),
     ]
     cw = (1 - 2 * MX - 2 * 0.02) / 3
@@ -336,21 +341,21 @@ def s_method(pdf):
     bullets(ax, MX, 0.38, [
         "Tracking & possession data to quantify pressing triggers and line height.",
         "Full-season sample to separate stable patterns from noise.",
-        "Linked Sportscode clips for every figure — one click to the moment.",
+        "Linked Sportscode clips for every figure, one click to the moment.",
         "Opponent-specific set-piece pack, frame by frame.",
     ], size=9, width=72, gap=0.05)
     # clip references panel (authentic timestamps)
     rx = 0.55
     panel(ax, rx, 0.07, 1 - MX - rx, 0.79, color=T.PANEL_2, ec=T.LINE)
     H(ax, rx + 0.018, 0.82, "KEY CLIPS TO PULL", 11, T.FEY, va="top")
-    H(ax, rx + 0.018, 0.795, "Goals conceded — the transition template", 8.5, T.WARN, va="top")
+    H(ax, rx + 0.018, 0.795, "Goals conceded, the transition template", 8.5, T.WARN, va="top")
     clips_against = [c for c in EXT["key_clips"] if not c["for"] and c["kind"] == "GOAL"][:8]
     yy = 0.765
     for c in clips_against:
         ax.text(rx + 0.022, yy, f"{c['match']:<16} {c['t']:>6}  {short(c['player'])}  ·  {c['ctx']}",
                 fontsize=8, color=T.TEXT, va="top", fontfamily=T.BODY_FONT, zorder=6)
         yy -= 0.032
-    H(ax, rx + 0.018, yy - 0.01, "Their goals — patterns to defend", 8.5, T.GOAL, va="top")
+    H(ax, rx + 0.018, yy - 0.01, "Their goals, patterns to defend", 8.5, T.GOAL, va="top")
     yy -= 0.045
     clips_for = [c for c in EXT["key_clips"] if c["for"] and c["kind"] == "GOAL"][:8]
     for c in clips_for:
@@ -367,9 +372,9 @@ def build():
         s_exec(pdf)
         content(pdf, 3, "Profile & form", "Dominant, and rarely troubled",
                 "01_form.png", (MX, 0.50, 0.63, 0.85),
-                "They control games and out-create everyone — beat them only in open, transitional matches.",
-                ["xG sits above xGA in 8 of 10 games — a passing contest favours them.",
-                 "The only cracks: PSV (3.22 xGA, lost) and Go Ahead (2.52) — both open and end-to-end.",
+                "They control games and out-create everyone, beat them only in open, transitional matches.",
+                ["xG sits above xGA in 8 of 10 games, a passing contest favours them.",
+                 "The only cracks: PSV (3.22 xGA, lost) and Go Ahead (2.52), both open and end-to-end.",
                  "Two shapes (4-2-3-1 / 4-3-3), one constant: Kökçü as the deepest pivot."],
                 chips=[(f"{MET['record']['W']}-{MET['record']['D']}-{MET['record']['L']}", "W-D-L"),
                        ("26-11", "goals"), ("1.83", "xG/game"), ("1.21", "xGA/game")],
@@ -377,39 +382,39 @@ def build():
                 second_fig=("09_momentum.png", (MX, 0.18, 0.63, 0.46)))
         content(pdf, 4, "In possession", "How they build and create",
                 "03_network.png", (MX, 0.46, 0.63, 0.86),
-                "They play through you and load the LEFT — cut Kökçü's time and crowd that channel.",
-                ["Only 10% long balls — patient build via Trauner/Hancko, Kökçü dropping in.",
+                "They play through you and load the LEFT, cut Kökçü's time and crowd that channel.",
+                ["Only 10% long balls, patient build via Trauner/Hancko, Kökçü dropping in.",
                  "41% of final-third entries and 58% of crosses come down the left.",
-                 "18.9 crosses/game but just 25% completed — defend the box and live with it."],
+                 "18.9 crosses/game but just 25% completed, defend the box and live with it."],
                 chips=[("58%", "possession"), ("22.1", "prog passes/g"),
                        ("18.9", "crosses/g"), ("25%", "crosses done")],
                 caption="Average positions (build-up shape) · node = involvement",
                 second_fig=("11_attackzones.png", (MX, 0.10, 0.63, 0.44)))
         content(pdf, 5, "Attacking threat", "Where the goals come from",
                 "02_shotmap.png", (MX, 0.12, 0.50, 0.85),
-                "Manufactured central chances and clinical finishing — deny the cutback and the half-space.",
-                ["28 big chances, 58% of shots in the box — not a hopeful side.",
+                "Manufactured central chances and clinical finishing, deny the cutback and the half-space.",
+                ["28 big chances, 58% of shots in the box, not a hopeful side.",
                  "Danilo leads scoring (7g, 5.45 xG); threat spread across Kökçü, Dilrosun, Szymański.",
-                 "27 goals from 18.3 xG — expect regression, but respect the finishers."],
-                chips=[(MET['attack']['shots'], "shots"), (MET['attack']['goals'], "goals"),
+                 "26 goals from 18.3 xG, expect regression, but respect the finishers."],
+                chips=[(MET['attack']['shots'], "shots"), (MET['record']['gf'], "goals"),
                        (MET['attack']['xg'], "xG"), (MET['attack']['bigchances'], "big chances")],
-                caption="Every shot · size = xG · gold = goals",
+                caption="Every shot · size = xG · blue = goals",
                 second_fig=("08_players.png", (0.50, 0.30, 0.95, 0.66)))
         content(pdf, 6, "Out of possession", "A mid-block, not a gegenpress",
                 "05_press.png", (MX, 0.12, 0.63, 0.85),
-                "They invite you in and counter — slow build lets them re-set, so play vertical and fast.",
+                "They invite you in and counter, slow build lets them re-set, so play vertical and fast.",
                 ["PPDA 10.8, only 14.5% of defensive actions in the attacking third.",
-                 "Recoveries average around halfway — controlled, not frantic.",
+                 "Recoveries average around halfway, controlled, not frantic.",
                  "We WILL get the ball in our half; the question is how quickly we use it."],
                 accent=T.CB_BLUE,
                 chips=[(MET['press']['ppda'], "PPDA"), ("x41", "avg recovery"),
                        ("42%", "actions def third"), ("6.8", "high turnovers/g")],
-                caption="Defensive actions heat · gold line = avg recovery height")
-        content(pdf, 7, "Transitions", "The opening — hurt them in behind",
+                caption="Defensive actions heat · blue line = avg recovery height")
+        content(pdf, 7, "Transitions", "The opening, hurt them in behind",
                 "12_transition.png", (MX, 0.30, 0.63, 0.82),
-                "Their high line and committed full-backs are the door — win it and go, fast, in behind.",
+                "Their high line and committed full-backs are the door, win it and go, fast, in behind.",
                 ["They concede a higher xG PER SHOT than they create (0.124 vs 0.098).",
-                 "72% of shots conceded are inside the box — almost all on transition.",
+                 "72% of shots conceded are inside the box, almost all on transition.",
                  "PSV (3.22 xGA) and Go Ahead (2.52) exploited exactly this."],
                 accent=T.WARN,
                 chips=[(MET['defense']['xga_per_shot'], "xGA/shot"),
@@ -418,25 +423,25 @@ def build():
                 caption="Left: where they regain · Right: where they get punished")
         content(pdf, 8, "Set pieces", "Live at both ends",
                 "07_setpiece.png", (MX, 0.28, 0.63, 0.82),
-                "A genuine route to goal for us — and a moment we must defend with full numbers.",
+                "A genuine route to goal for us, and a moment we must defend with full numbers.",
                 ["~1 in 5 of their shots is from a set piece (39 shots, 5 goals, 5.8 xG).",
                  "Trauner and Hancko attack the box; Kökçü delivers.",
-                 "But they conceded 3 set-piece goals in 10 games — load the box, far post."],
+                 "But they conceded 3 set-piece goals in 10 games, load the box, far post."],
                 chips=[(MET['attack']['setpiece_goals'], "SP goals for"),
                        (MET['defense']['setpiece_goals_conceded'], "SP goals against"),
                        (MET['attack']['setpiece_shots'], "SP shots for"),
                        (MET['defense']['setpiece_shots_conceded'], "SP shots against")],
-                caption="Set-piece shots — threat (left) and conceded (right)")
+                caption="Set-piece shots, threat (left) and conceded (right)")
         s_players_radar(pdf, 9, ["Orkun Kökçü", "Quinten Timber", "Sebastian Szymanski"],
-                        "The spine — control & creation")
+                        "The spine, control & creation")
         s_players_radar(pdf, 10, ["Javairô Dilrosun", "Dávid Hancko", "Danilo Pereira da Silva"],
-                        "The threats — width, build & finishing")
+                        "The threats, width, build & finishing")
         content(pdf, 11, "Squad overview", "Who does what",
                 "10_rankbars.png", (MX, 0.08, 0.63, 0.85),
                 "Threat is shared, but the creative load runs through a small core.",
                 ["Kökçü & Hancko drive progression; Timber & Szymański create.",
                  "Dilrosun is the dribble threat; Danilo the focal finisher.",
-                 "Depth is real — Giménez, Wälemark, Idrissi all contribute off the bench."],
+                 "Depth is real, Giménez, Wälemark, Idrissi all contribute off the bench."],
                 accent=T.GREEN,
                 caption="Squad ranked across the window (per the 10-match sample)")
         s_plan(pdf)

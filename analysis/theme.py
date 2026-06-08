@@ -14,52 +14,40 @@ from scipy.interpolate import make_interp_spline
 THEME = os.environ.get("DOSSIER_THEME", "light").lower()
 _LIGHT = THEME != "dark"
 
-# ---- palette (Feyenoord house style) -------------------------------------
-# Brand colours are shared; neutrals + functional accents flip by mode.
-FEY = "#E4032E"          # Feyenoord red (their identity + their actions)
-FEY_D = "#A8001F"        # deep red
-FEY_BRT = "#FF234E"      # bright red highlight
-
+# ---- palette --------------------------------------------------------------
+# LIGHT = Club Brugge house style: royal BLUE + BLACK on WHITE only
+# (neutral greys are tints of black/white). No other hues are used.
 if _LIGHT:
-    INK = "#F5F2EA"      # warm paper page background
-    INK_2 = "#EDE8DC"    # alternate band
-    PANEL = "#FFFFFF"    # white card
-    PANEL_2 = "#F1ECE1"  # raised / callout fill
-    LINE = "#D2CCBC"     # hairlines / pitch lines
-    HAIRLINE_SOFT = "#E4DFD2"
-    TEXT = "#17191E"     # near-black ink
-    MUTE = "#586172"     # secondary
-    FAINT = "#9A958A"    # tertiary
-    CB_BLUE = "#1E6FC4"  # our voice (darker for light bg)
-    CB_BLUE_D = "#14528F"
-    GREEN = "#149A5C"
-    GOAL = "#C98A06"     # goals / highlight (deep gold for contrast on paper)
-    WARN = "#D9531A"     # conceded / threat
-    CREAM = "#B8902F"    # warm gold hairline accent
-    EDGE = "#17191E"     # marker outline (dark on paper)
-    STROKE_BG = INK      # label halo colour (paper)
-    CMAP_HEAT = "Reds"   # density: light -> deep red (reads on paper)
-    CMAP_PRESS = "Blues"
+    INK = "#FFFFFF"          # white page background
+    INK_2 = "#F4F8FD"        # barely-there gradient top
+    PANEL = "#F4F7FC"        # card
+    PANEL_2 = "#E9F1FB"      # raised / callout / header band
+    LINE = "#CAD7E7"         # hairlines / pitch lines
+    HAIRLINE_SOFT = "#E4EBF4"
+    TEXT = "#0E1722"         # near-black ink
+    MUTE = "#33414F"         # secondary (dark slate, readable on white)
+    FAINT = "#637186"        # tertiary (captions)
+    CB_BLUE = "#0A57B0"      # Club Brugge royal blue (brand + 'our' series + goals)
+    CB_BLUE_D = "#063A78"
+    FEY = "#16191F"          # near-black: opponent / primary data series
+    FEY_D = "#000000"
+    FEY_BRT = "#2A2F37"
+    GOAL = "#0A57B0"         # goals / highlights -> royal blue (readable two-tone)
+    WARN = "#3C4A5C"         # dark slate: conceded / threat (neutral)
+    GREEN = "#4E94D8"        # mid blue: positive fills (e.g. take-ons)
+    CREAM = "#0A57B0"        # warm accent removed; reuse blue
+    EDGE = "#FFFFFF"         # white marker outline to separate overlaps
+    STROKE_BG = "#FFFFFF"    # white label halo
+    CMAP_HEAT = "Blues"
+    CMAP_PRESS = "Greys"
 else:
-    INK = "#0C0D10"      # near-black page background
-    INK_2 = "#101116"
-    PANEL = "#15161B"
-    PANEL_2 = "#1C1E25"
-    LINE = "#2C2F39"
-    HAIRLINE_SOFT = "#22242C"
-    TEXT = "#F4F5F7"
-    MUTE = "#A2A8B4"
-    FAINT = "#6A7180"
-    CB_BLUE = "#2E86DE"
-    CB_BLUE_D = "#1B5FB0"
-    GREEN = "#19B36B"
-    GOAL = "#F4C430"
-    WARN = "#FF7B3D"
-    CREAM = "#EFE7D2"
-    EDGE = "#06101C"
-    STROKE_BG = INK
-    CMAP_HEAT = "rocket"
-    CMAP_PRESS = "mako"
+    INK = "#0A0B0F"; INK_2 = "#12141C"; PANEL = "#15171F"; PANEL_2 = "#1C1F2A"
+    LINE = "#2B2F3C"; HAIRLINE_SOFT = "#23262F"; TEXT = "#F6F7FA"; MUTE = "#9DA6B6"
+    FAINT = "#646D7D"; CB_BLUE = "#1E73E6"; CB_BLUE_D = "#10468F"
+    FEY = "#E4032E"; FEY_D = "#A8001F"; FEY_BRT = "#FF234E"
+    GOAL = "#F4C430"; WARN = "#FF7B3D"; GREEN = "#1FBE76"
+    CREAM = "#E7D9B4"; EDGE = "#05060A"; STROKE_BG = "#0A0B0F"
+    CMAP_HEAT = "rocket"; CMAP_PRESS = "mako"
 
 RED_DEEP = FEY_D
 RED_BRT = FEY_BRT
@@ -155,11 +143,11 @@ from matplotlib.patches import Rectangle as _Rect, Polygon as _Poly  # noqa: E40
 # ---------------------------------------------------------------------------
 # Signature house-style moves (operate on a full-page axes, coords 0..1)
 # ---------------------------------------------------------------------------
-def spine(ax, y0=0.062, y1=0.94, x=None):
-    """Constant red brand skeleton anchoring the left margin."""
+def spine(ax, y0=0.062, y1=0.94, x=None, color=CB_BLUE):
+    """Constant brand skeleton anchoring the left margin (Club Brugge blue)."""
     if x is None:
         x = MX - 0.020
-    ax.add_patch(_Rect((x, y0), 0.0045, y1 - y0, color=FEY, zorder=3))
+    ax.add_patch(_Rect((x, y0), 0.0045, y1 - y0, color=color, zorder=3))
 
 
 def ghost_number(ax, n, x=0.992, y=0.012):
@@ -196,6 +184,23 @@ def crest_watermark(fig, emblem_path, center=(0.5, 0.30), width=0.5, alpha=0.05)
     a.imshow(img, alpha=alpha)
     a.axis("off")
     return a
+
+
+def page_gradient(fig, glow=True):
+    """Rich branded page background: subtle vertical gradient + faint red glow."""
+    ax = fig.add_axes([0, 0, 1, 1], zorder=-30)
+    ax.axis("off"); ax.set_xlim(0, 1); ax.set_ylim(0, 1)
+    top = np.array(to_rgb(INK_2)); bot = np.array(to_rgb(INK))
+    g = np.linspace(0, 1, 256).reshape(-1, 1, 1)
+    img = top.reshape(1, 1, 3) * (1 - g) + bot.reshape(1, 1, 3) * g
+    ax.imshow(img, extent=[0, 1, 0, 1], aspect="auto", origin="upper", zorder=-30)
+    if glow:
+        yy, xx = np.mgrid[0:240, 0:170]
+        d = np.hypot((xx - 170) / 120, (yy - 0) / 150)        # glow at top-right
+        a = np.clip(0.09 * np.exp(-(d ** 2)), 0, 0.09)
+        rgba = np.zeros((240, 170, 4)); rgba[..., :3] = to_rgb(CB_BLUE); rgba[..., 3] = a
+        ax.imshow(rgba, extent=[0.62, 1.0, 0.66, 1.0], aspect="auto", origin="upper", zorder=-29)
+    return ax
 
 
 def jersey_split(ax, x0, y0, x1, y1, alpha=0.10):
